@@ -1,0 +1,10 @@
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'enabled', 'TRUE');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'ratings_allow', 'no');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'tags_display', 'no');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'url_style', 'category');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'categories_display', 'yes');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'abbreviate_description', 'no');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'abbreviate_length', '100');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'products_per_page', '5');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'comments_per_page', '5');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'comments_allow', 'no');

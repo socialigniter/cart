@@ -1,0 +1,1 @@
+<li><a class="sidebar_icon" href="<?= base_url() ?>home/cart"><img src="<?= $this_module_assets ?>cart_24.png"><span>Cart</span></a></li>
