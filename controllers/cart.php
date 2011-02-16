@@ -7,23 +7,18 @@ class Cart extends Site_Controller
         
         $this->load->helper('cart');
         $this->load->library('cart_igniter');
-        		
-		$this->data['ratings_allow']		= config_item('cart_ratings_allow');
-		$this->data['categories_display']	= config_item('cart_categories_display');
-		$this->data['tags_display']			= config_item('cart_tags_display');
-		$this->data['url_style'] 			= config_item('cart_url_style');
-
-		$this->data['date_style']			= config_item('cart_date_style');
-		$this->data['abbreviate_post']		= config_item('cart_abbreviate_post');
-		$this->data['abbreviate_length']	= config_item('cart_abbreviate_length');
-		$this->data['posts_per_page']		= config_item('cart_posts_per_page');
-		$this->data['comments_allow']		= config_item('cart_comments_allow');		
-
-		$this->data['modules_sidebar']	   .= $this->cart_igniter->render_sidebar_cart();
+    }
+    
+    function index()
+    {
+    	$this->data['products']		= $this->social_igniter->get_content_view('module', 'cart');
+    	$this->data['page_title']	= 'Cart';
+    
+    	$this->render();
     }
 	
 	/* Checkout Steps */
-	function index()
+	function checkout()
 	{
 		$this->data['registration_progress']	= 'notdone';
 		$this->data['payment_progress'] 		= 'notdone';

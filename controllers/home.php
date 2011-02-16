@@ -20,108 +20,107 @@ class Home extends Dashboard_Controller
 
 	function create()
 	{
-		// Load Models, Queries, Libraries, Etc.
-		$this->data['categories']	= $this->social_tools->get_categories_type('blog');				
-		
-		// Define Variables, Flags, Etc...	
-	   	$user_id					= $this->session->userdata('user_id');	
- 	
- 		// Validation Rules
-	   	$this->form_validation->set_rules('title', 'Title', 'required');	
-	   	$this->form_validation->set_rules('content', 'Content', 'required');
-	   	$this->form_validation->set_rules('comments_allow', 'Comments', 'required');
-	
-		// Passes Validation
-        if ($this->form_validation->run() == true)
-        {		
-        	$post_data = array(				
-				'parent_id'			=> 0,
-				'category_id'		=> $this->input->post('category_id'),
-				'module'			=> 'core',
-				'type'				=> 'status',
-				'source'			=> '',
-				'order'				=> 0,
-				'user_id'			=> $this->session->userdata('user_id'),
-				'title'				=> $this->input->post('title'),
-				'title_url'			=> url_username($this->input->post('title'), 'dash', TRUE), 
-				'content'			=> $this->input->post('content'),
-				'details'			=> '',
-				'access'			=> 'E',
-				'comments_allow'	=> 'Y',
-				'geo_lat'			=> $this->input->post('geo_lat'),
-				'geo_long'			=> $this->input->post('geo_long'),
-				'geo_accuracy'		=> $this->input->post('geo_accuracy'),				
-				'status'			=> form_submit_publish($this->input->post('publish'), $this->input->post('save_draft'))  			
-        	);		
-        									
-			// Insert        		
-		    $post = $this->social_igniter->add_content($post_data);
-		    
-		    // Tags
-		    $this->social_tools->process_tags($this->input->post('tags'), $post->content_id);
-		    
-		    // Activity
-			$info = array(
-				'site_id'		=> config_item('site_id'),
-				'user_id'		=> $this->session->userdata('user_id'),
-				'verb'			=> 'post',
-				'module'		=> 'blog',
-				'type'			=> 'article'
-			);
-			$data = array(
-				'content_id'	=> $post->content_id,
-				'title'			=> $this->input->post('title'),
-				'url'			=> base_url().'blog/view/'.$post->content_id,
-				'description' 	=> character_limiter(strip_tags($this->input->post('content'), ''), config_item('home_description_length'))
-			);
-		
-			$activity = $this->social_igniter->add_activity($info, $data);
-		    
-		    // Redirect
-			redirect(base_url().'home/#item_'.$activity->activity_id);				
-		}
-		// Does Not Pass Validation
-		else 
-		{			 			 				
-			$this->data['sub_title']		= 'Write';
-			$this->data['message']			= validation_errors();
-			$this->data['title']			= $this->input->post('title');
-			$this->data['price']			= $this->input->post('price');
+		// Load Models, Queries, Libraries, Etc.		
+		if (($this->uri->segment(3) == 'manage') && ($this->uri->segment(4)))
+		{
+			// Need is valid & access and such
+			$product		= $this->social_igniter->get_content($this->uri->segment(4));
+			$product_meta	= $this->social_igniter->get_meta_content($product->content_id);
+				
+			// Non Form Fields
+			$this->data['sub_title']		= $product->title;
+			$this->data['form_url']			= base_url().'api/content/modify/id/'.$this->uri->segment(4);
 			
-			$this->data['wysiwyg_name']		= 'content';
-			$this->data['wysiwyg_id']		= 'wysiwyg';
-			$this->data['wysiwyg_class']	= 'wysiwyg_norm_full';
-			$this->data['wysiwyg_width']	= 640;
-			$this->data['wysiwyg_height']	= 225;
-			$this->data['wysiwyg_resize']	= TRUE;
-			$this->data['wysiwyg_media']	= FALSE;
-			$this->data['wysiwyg_value']	= $this->input->post('content');
-			$this->data['wysiwyg']	 		= $this->load->view($this->config->item('dashboard_theme').'/partials/wysiwyg', $this->data, true);
+			// Form Fields
+			$this->data['title'] 			= $product->title;
+			$this->data['title_url'] 		= $product->title_url;
+			$this->data['wysiwyg_value']	= $product->content;
+			$this->data['category_id']		= $product->category_id;
+			$this->data['access']			= $product->access;
+			$this->data['comments_allow']	= $product->comments_allow;
+			$this->data['status']			= display_content_status($product->status, $product->approval);
 
-			$this->data['wysiwyg_name']		= 'details';
-			$this->data['wysiwyg_id']		= 'wysiwyg_details';
-			$this->data['wysiwyg_class']	= 'wysiwyg_norm_full';
-			$this->data['wysiwyg_width']	= 640;
-			$this->data['wysiwyg_height']	= 200;
-			$this->data['wysiwyg_resize']	= TRUE;
-			$this->data['wysiwyg_media']	= FALSE;
-			$this->data['wysiwyg_value']	= $this->input->post('details');
-			$this->data['wysiwyg_details']	= $this->load->view($this->config->item('dashboard_theme').'/partials/wysiwyg', $this->data, true);
-
-
-			$this->data['comments']			= $this->input->post('comments');
-			$this->data['region']			= '';		
-								
-	 		$this->render();
+			// Meta Content
+			$this->data['excerpt']			= $this->social_igniter->find_meta_content_value('excerpt', $product_meta);	
+			$this->data['price']			= $this->social_igniter->find_meta_content_value('price', $product_meta);					
 		}
+		else
+		{		
+			// Non Form Fields
+			$this->data['sub_title']		= 'Write';
+			$this->data['form_url']			= base_url().'api/content/create';
+			
+			// Form Fields
+			$this->data['title'] 			= '';
+			$this->data['title_url']		= '';
+			$this->data['wysiwyg_value']	= $this->input->post('content');
+			$this->data['category_id']		= '';
+			$this->data['access']			= 'E';
+			$this->data['comments_allow']	= '';
+			$this->data['status']			= display_content_status('U');
+			
+			// Meta Content
+			$this->data['excerpt']			= '';	
+			$this->data['price']			= '';				
+		}
+		
+		
 
+		$this->data['wysiwyg_name']			= 'content';
+		$this->data['wysiwyg_id']			= 'wysiwyg_content';
+		$this->data['wysiwyg_class']		= 'wysiwyg_norm_full';
+		$this->data['wysiwyg_width']		= 640;
+		$this->data['wysiwyg_height']		= 300;
+		$this->data['wysiwyg_resize']		= TRUE;
+		$this->data['wysiwyg_media']		= FALSE;			
+		$this->data['wysiwyg']	 			= $this->load->view($this->config->item('dashboard_theme').'/partials/wysiwyg', $this->data, true);
+		$this->data['categories'] 			= $this->social_tools->get_categories_dropdown('module', 'cart', $this->session->userdata('user_id'), $this->session->userdata('user_level_id'));
+
+		$this->data['toolbar_steps']		= $this->load->view('../modules/cart/views/partials/toolbar_steps', $this->data, true);
+	 	$this->data['content_publisher'] 	= $this->load->view(config_item('dashboard_theme').'/partials/content_publisher', $this->data, true);
+							
+ 		$this->render('dashboard_wide');
 	}
 	
-	function events()
+	function media()
 	{
+		// If Not Class Exists
+		if (!$this->uri->segment(4)) redirect('home/cart/create', 'refresh');
+		$product = $this->social_igniter->get_content($this->uri->segment(4));
+		if (!$product) redirect('home/cart/create', 'refresh');
+		$product_meta = $this->social_igniter->get_meta_content($product->content_id);
+
+		// Gets Gallery Category
+		$category = $this->classes_igniter->get_class_image_album();
+
+		// Gets Media Gallery
+		if ($media_gallery = json_decode($this->social_igniter->find_meta_content_value('media_gallery', $product_meta)))
+		{	
+			if (property_exists($media_gallery, 'gallery'))
+			{
+				$this->data['media_gallery']	= $media_gallery->gallery;
+			}
+			else
+			{
+				$this->data['media_gallery']	= '';
+			}
+		}
+		else
+		{
+			$this->data['media_gallery']	= NULL;
+		}
+				
+		// Non Form Fields
+		$this->data['sub_title']			= 'Media';		
+		$this->data['class']				= $product;
+		$this->data['form_url']				= base_url().'api/cart/media/id/'.$this->uri->segment(4);
+		$this->data['category_id']			= $category->category_id;
+
+		$this->data['status']				= display_content_status($product->status, $product->approval);
+		$this->data['toolbar_steps']		= $this->load->view('../modules/classes/views/partials/toolbar_steps', $this->data, true);	
+	 	$this->data['content_publisher'] 	= $this->load->view(config_item('dashboard_theme').'/partials/content_publisher', $this->data, true);	
 	
-	
-		$this->render();
+		$this->render('dashboard_wide');
 	}
 
 	

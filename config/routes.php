@@ -15,7 +15,7 @@
 
 $route['cart'] 							= 'cart';
 $route['cart/settings']					= 'cart/settings/index';
-//$route['cart/(:any)/(:any)/(:any)']		= 'cart/view';
+//$route['cart/(:any)/(:any)/(:any)']	= 'cart/view';
 //$route['cart/(:any)/(:any)']			= 'cart/view';
 //$route['cart/(:any)']					= 'cart/view';
 

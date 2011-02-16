@@ -18,6 +18,13 @@
 // Cart Path - should match the 1st URI segment specified in routes.php
 $config['cart_path'] = 'cart/';
 
+$config['cart_create_stages'] = array(
+	1 => 'create',
+	2 => 'manage',
+	3 => 'media',
+	4 => 'details',
+);
+
 $config['url_style_products'] = array(
 	'sub'		=> 'product-category / sub-category / your-product-name',
 	'category'	=> 'product-category / your-product-name',
