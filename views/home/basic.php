@@ -2,10 +2,12 @@
 
 	<h2>Basics</h2>
 	
-	<form name="create" method="post" id="classes_basic" action="<?= $form_url ?>" enctype="multipart/form-data">
+	<form name="cart_basic" method="post" id="cart_basic" action="<?= $form_url ?>" enctype="multipart/form-data">
 		
 		<h3>Title</h3>
 		<p><input type="text" name="title" value="<?= $title ?>" id="title" class="input_full" /></p>
+
+		<p id="title_slug" class="slug_url"></p>
 
 		<h3>Dsecription</h3>
 		<p><?= $wysiwyg ?></p>
@@ -36,9 +38,7 @@
 		<input type="submit" name="publish" value="Continue" />
 		
 	</form>
-	
 </div>
-
 
 <div id="content_wide_toolbar">
 	<?= $toolbar_steps ?>
@@ -49,13 +49,13 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-	doPlaceholder('#title', "How to Grow a Garden");
-	doPlaceholder('#excerpt', "Ever wanted to grow your own fruits and vegetables?");
-	doPlaceholder('#tags', "Gardening, Fruit, Vegetables");
+	doPlaceholder('#title', "Greeting Cards");
+	doPlaceholder('#excerpt', "Custom small run greeting cards, each individually hand pressed on a vintage printing press.");
+	doPlaceholder('#tags', "Cards, Artisan, Printing Press");
 	$('#title').slugify({url:base_url+current_module+'/',slug:'#title_slug',name:'title_url', slugValue:'<?= $title_url ?>'});
 
 	// Write Article
-	$("#classes_basic").bind("submit", function(eve)
+	$("#cart_basic").bind("submit", function(eve)
 	{
 		eve.preventDefault();
 		var valid_title		= isFieldValid('#title', "How to Grow a Garden", 'You need a class title');
@@ -65,9 +65,9 @@ $(document).ready(function()
 		if (valid_title == true && valid_excerpt == true)
 		{
 			// Strip Empty Fields
-			cleanFieldEmpty('#tags', "Gardening, Fruit, Vegetables");		
+			cleanFieldEmpty('#tags', "Cards, Artisan, Printing Press");		
 			
-			var class_data = $('#classes_basic').serializeArray();
+			var class_data = $('#cart_basic').serializeArray();
 			class_data.push({'name':'source','value':'website'});
 
 			$(this).oauthAjax(
@@ -81,7 +81,7 @@ $(document).ready(function()
 		  		{		  					  			  			
 					if (result.status == 'success')
 					{
-						window.location.href = base_url + 'home/classes/media/' + result.data.content_id;			 	
+						window.location.href = base_url + 'home/cart/media/' + result.data.content_id;			 	
 				 	}
 				 	else
 				 	{

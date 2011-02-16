@@ -14,9 +14,12 @@
 */
 
 $route['cart'] 							= 'cart';
-$route['cart/settings']					= 'cart/settings/index';
+
+/* Home */
+$route['cart/home/create'] 				= 'home/basic';
+$route['cart/home/manage'] 				= 'home/manage';
+$route['cart/home/manage/(:num)'] 		= 'home/basic';
+
 //$route['cart/(:any)/(:any)/(:any)']	= 'cart/view';
 //$route['cart/(:any)/(:any)']			= 'cart/view';
 //$route['cart/(:any)']					= 'cart/view';
-
-//$route['classes'] 						= 'cart';

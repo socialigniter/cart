@@ -10,7 +10,6 @@ class Home extends Dashboard_Controller
 		$this->load->library('social_tools');		
 		$this->load->library('cart_igniter');
 		$this->load->helper('cart');
-	
 	}
 	
 	function index()
@@ -18,7 +17,7 @@ class Home extends Dashboard_Controller
 		redirect('home');
 	}
 
-	function create()
+	function basic()
 	{
 		// Load Models, Queries, Libraries, Etc.		
 		if (($this->uri->segment(3) == 'manage') && ($this->uri->segment(4)))
@@ -124,10 +123,39 @@ class Home extends Dashboard_Controller
 	}
 
 	
-	function products()
+	function details()
 	{
-	
+		if (!$this->uri->segment(4)) redirect('home/cart/create', 'refresh');
+
+		// Need to check content is valid & access and such
+		$product			= $this->social_igniter->get_content($this->uri->segment(4));
+		$product_meta 	= $this->social_igniter->get_meta_content($product->content_id);
+
+		// Non Form Fields
+		$this->data['sub_title']			= 'Details';
+		$this->data['class']				= $this->social_igniter->get_content($this->uri->segment(4));
+		$this->data['form_url']				= base_url().'api/classes/details/id/'.$this->uri->segment(4);
+		
+		// Key Details
+		$this->data['wysiwyg_name']			= 'key_details';
+		$this->data['wysiwyg_id']			= 'wysiwyg_key';
+		$this->data['wysiwyg_class']		= 'wysiwyg_norm_full';
+		$this->data['wysiwyg_width']		= 625;
+		$this->data['wysiwyg_height']		= 225;
+		$this->data['wysiwyg_resize']		= TRUE;
+		$this->data['wysiwyg_media']		= FALSE;
+		$this->data['wysiwyg_value']		= $this->social_igniter->find_meta_content_value('key_details', $product_meta);
+		$this->data['wysiwyg_key_details']	= $this->load->view($this->config->item('dashboard_theme').'/partials/wysiwyg', $this->data, true);
+
+		// Deliverables
+		$this->data['deliverables']			= $this->social_igniter->find_meta_content_value('deliverables', $product_meta);
+				
+		$this->data['status']				= display_content_status($product->status, $product->approval);
+		$this->data['toolbar_steps']		= $this->load->view('../modules/cart/views/partials/toolbar_steps', $this->data, true);	
+	 	$this->data['content_publisher'] 	= $this->load->view(config_item('dashboard_theme').'/partials/content_publisher', $this->data, true);	
+
 		$this->render('dashboard_wide');
+	
 	}
 	
 	function purchases()
