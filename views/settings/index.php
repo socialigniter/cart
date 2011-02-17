@@ -25,10 +25,6 @@
 	<?= form_dropdown('url_style', config_item('url_style_products'), $settings['cart']['url_style']) ?>
 	</p>
 
-	<p>Date
-	<?= form_dropdown('date_style', config_item('date_style_types'), $settings['cart']['date_style']) ?>
-	</p>
-
 	<p>Abbreviate
 	<?= form_dropdown('abbreviate_description', config_item('yes_or_no'), $settings['cart']['abbreviate_description']) ?>
 	<input type="text" size="4" name="abbreviate_length" value="<?= $settings['cart']['abbreviate_length'] ?>" /> characters

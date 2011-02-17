@@ -6,15 +6,15 @@ class Settings extends Dashboard_Controller
     {
         parent::__construct();
 
-		$this->load->library('cart_igniter');
+		if ($this->data['logged_user_level_id'] > 1) redirect('home');	
 
 		$this->data['page_title']	= 'Settings';
     }
 
 	function index()
 	{
-		if ($this->data['level'] > 1) redirect('home');
-
+		$this->load->config('cart');
+	
 		$this->data['sub_title'] = 'Cart';
 		$this->render();
 	}
