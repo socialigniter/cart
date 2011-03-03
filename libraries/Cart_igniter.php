@@ -44,25 +44,5 @@ class Cart_igniter
 	
 		return $this->ci->load->view('partials/widget_quad', $this->data, true);
 	}
-
-	
-	// Makes Week 1 or Day 1 segment from object of events
-	function make_time_segment_array($events, $time_segment)
-	{
-		$periods		= array();
-		$this_period	= NULL;
-		
-		foreach ($events as $event)
-		{		
-			$this_period = date_parser($time_segment, mysql_to_unix($event->date_start));
-			
-			if (!in_array($this_period, $periods))
-			{
-				$periods[] = $this_period;
-			}
-		}
-					
-		return $periods;	
-	}
 	
 }
