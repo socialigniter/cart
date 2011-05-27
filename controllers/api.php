@@ -92,7 +92,7 @@ class Api extends Oauth_Controller
 	}
 		
 	// Removes Item
-	function remove_delete()
+	function remove_get()
 	{
 		$update = $this->cart->update(array('rowid' => $this->uri->segment(3), 'qty' => 0));
 		
@@ -109,7 +109,7 @@ class Api extends Oauth_Controller
 	}
 	
 	// Emptys Cart
-	function destroy_delete()
+	function destroy_get()
 	{
 		$destroy = $this->cart->destroy();
 

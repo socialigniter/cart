@@ -61,9 +61,7 @@ class Home extends Dashboard_Controller
 			// Meta Content
 			$this->data['excerpt']			= '';	
 			$this->data['price']			= '';				
-		}
-		
-		
+		}		
 
 		$this->data['wysiwyg_name']			= 'content';
 		$this->data['wysiwyg_id']			= 'wysiwyg_content';
@@ -73,11 +71,14 @@ class Home extends Dashboard_Controller
 		$this->data['wysiwyg_resize']		= TRUE;
 		$this->data['wysiwyg_media']		= FALSE;			
 		$this->data['wysiwyg']	 			= $this->load->view($this->config->item('dashboard_theme').'/partials/wysiwyg', $this->data, true);
-		$this->data['categories'] 			= $this->social_tools->get_categories_dropdown('module', 'cart', $this->session->userdata('user_id'), $this->session->userdata('user_level_id'));
+		$this->data['categories'] 			= $this->social_tools->make_categories_dropdown('module', 'cart', $this->session->userdata('user_id'), $this->session->userdata('user_level_id'));
 
+		$this->data['form_module']			= 'cart';
+		$this->data['form_type']			= 'product';		
+		$this->data['form_name']			= 'product_editor';
 		$this->data['toolbar_steps']		= $this->load->view('../modules/cart/views/partials/toolbar_steps', $this->data, true);
-	 	$this->data['content_publisher'] 	= $this->load->view(config_item('dashboard_theme').'/partials/content_publisher', $this->data, true);
-							
+	 	$this->data['content_publisher'] 	= $this->social_igniter->make_content_publisher($this->data, 'form');
+
  		$this->render('dashboard_wide');
 	}
 	
@@ -117,7 +118,7 @@ class Home extends Dashboard_Controller
 
 		$this->data['status']				= display_content_status($product->status, $product->approval);
 		$this->data['toolbar_steps']		= $this->load->view('../modules/classes/views/partials/toolbar_steps', $this->data, true);	
-	 	$this->data['content_publisher'] 	= $this->load->view(config_item('dashboard_theme').'/partials/content_publisher', $this->data, true);	
+	 	$this->data['content_publisher'] 	= $this->social_igniter->make_content_publisher($this->data, 'button', $this->uri->segment(4));
 	
 		$this->render('dashboard_wide');
 	}
@@ -152,7 +153,7 @@ class Home extends Dashboard_Controller
 				
 		$this->data['status']				= display_content_status($product->status, $product->approval);
 		$this->data['toolbar_steps']		= $this->load->view('../modules/cart/views/partials/toolbar_steps', $this->data, true);	
-	 	$this->data['content_publisher'] 	= $this->load->view(config_item('dashboard_theme').'/partials/content_publisher', $this->data, true);	
+	 	$this->data['content_publisher'] 	= $this->social_igniter->make_content_publisher($this->data, 'button', $this->uri->segment(4));
 
 		$this->render('dashboard_wide');
 	

@@ -1,4 +1,9 @@
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'widgets', 'TRUE');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'categories', 'TRUE');
 INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'enabled', 'TRUE');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'create_permission', '3');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'publish_permission', '2');
+INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'manage_permission', '2');
 INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'ratings_allow', 'no');
 INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'tags_display', 'no');
 INSERT INTO `settings` VALUES(NULL, 1, 'cart', 'url_style', 'category');

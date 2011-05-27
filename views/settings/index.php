@@ -1,4 +1,4 @@
-<form name="settings" method="post" action="<?= base_url() ?>settings/update" enctype="multipart/form-data">
+<form name="settings_update" id="settings_update" method="post" action="<?= base_url() ?>api/settings/modify" enctype="multipart/form-data">
 
 <div class="content_wrap_inner">
 	
@@ -6,6 +6,26 @@
 		<h3>Module</h3>
 		<p><?= form_dropdown('enabled', config_item('enable_disable'), $settings['cart']['enabled']) ?></p>
 	</div>	
+	
+	<h3>Permissions</h3>
+
+	<p>Create
+	<?= form_dropdown('create_permission', config_item('users_levels'), $settings['cart']['create_permission']) ?>
+	</p>
+
+	<p>Publish
+	<?= form_dropdown('publish_permission', config_item('users_levels'), $settings['cart']['publish_permission']) ?>	
+	</p>
+
+	<p>Manage All
+	<?= form_dropdown('manage_permission', config_item('users_levels'), $settings['cart']['manage_permission']) ?>	
+	</p>
+		
+</div>
+
+<span class="item_separator"></span>
+
+<div class="content_wrap_inner">		
 	
 	<h3>Products</h3>
 
@@ -33,8 +53,12 @@
 	<p>Products Per-Page
 	<?= form_dropdown('products_per_page', config_item('amount_increments_all'), $settings['cart']['products_per_page']) ?>
 	</p>
-	
-	<div class="content_line"></div>	
+		
+</div>
+
+<span class="item_separator"></span>
+
+<div class="content_wrap_inner">
 		
 	<h3>Comments</h3>	
 
@@ -53,3 +77,5 @@
 </div>
 
 </form>
+
+<?= $shared_ajax ?>
