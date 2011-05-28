@@ -50,18 +50,18 @@ class Api extends Oauth_Controller
 	}
 	
 	// Update Item
-	function add()
+	function add_get()
 	{
 		$data = array(
-			'rowid'	=> $this->uri->segment(3),
-			'qty' 	=> $this->uri->segment(4)
+			'rowid'	=> $this->get('id'),
+			'qty' 	=> $this->get('quantity')
 		);
 		
 		$add = $this->cart->update($data);
 
 		if ($add)
 		{
-            $message = array('status' => 'success', 'message' => 'Success ');		
+            $message = array('status' => 'success', 'message' => 'Yay, your item was added to cart');		
 		}
 		else
 		{
@@ -71,16 +71,16 @@ class Api extends Oauth_Controller
         $this->response($message, 200);	
 	}
 
-	function update()
+	function update_get()
 	{
 		$data = array(
-			'rowid' => 'ceaa6bc378827d07d5a035d6d3687e81',
-			'qty' => '2'
+			'rowid'	=> $this->get('id'),
+			'qty'	=> $this->get('quantity')
 		);
 		
 		if ($this->cart->update($data))
 		{
-            $message = array('status' => 'success', 'message' => 'Success ');		
+            $message = array('status' => 'success', 'message' => 'Yah, your cart was updated');		
 		}
         else
         {

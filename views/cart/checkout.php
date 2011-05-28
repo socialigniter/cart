@@ -22,8 +22,8 @@
 			</td>
 			<td class="cart_contents_actions">
 				<span id="quantity_<?= $item['rowid'] ?>" class="cart_item_quantity"><?= $item['qty'] ?></span>
-				<a class="cart_button" href="<?= base_url().'cart/add/'.$item['rowid'] ?>">Add</a>
-				<a class="cart_button" href="<?= base_url().'cart/remove/'.$item['rowid'] ?>">Remove</a>
+				<a class="cart_button" href="<?= base_url().'api/cart/add/id/'.$item['rowid'] ?>">Add</a>
+				<a class="cart_button" href="<?= base_url().'api/cart/remove/id/'.$item['rowid'] ?>">Remove</a>
 			</td>
 			<td class="cart_contents_price">$<span id="item_price_<?= $item['rowid'] ?>"><?= $this->cart->format_number($item['price']); ?></span></td>
 			<td class="cart_contents_item_total">$<span id="item_subtotal_<?= $item['rowid'] ?>"><?= $this->cart->format_number($item['subtotal']); ?></span></td>
@@ -38,7 +38,7 @@
 		<div id="cart_checkout_actions">
 			<a class="submit_button btn_large left" href="<?= $previous_page ?>">Continue Shopping</a>
 			<a class="submit_button btn_medium right" href="<?= base_url() ?>cart/registration">To Registration</a>	
-			<a id="cart_button_empty" class="submit_button btn_small right" href="<?= base_url() ?>cart/destroy">Empty</a>		
+			<a id="cart_button_empty" class="submit_button btn_small right" href="<?= base_url() ?>api/cart/destroy">Empty</a>		
 			<div class="clear"></div>
 		</div>			
 
@@ -82,7 +82,102 @@
 		
 	<?php endif; ?>			
 
-
 </div>
+<div class="clear"></div>
 
-	<div class="clear"></div>
+<script type="text/javascript">
+$(document).ready(function()
+{	
+	// Add / Remove Item
+	$('.cart_button').live('click', function(eve)
+	{
+		eve.preventDefault();
+		
+		var api_url = $(this).attr('href');
+		var item_action_id	= api_url.replace(base_url + 'api/cart/','');
+		var	item_values		= item_action_id.split('/');
+		var item_action		= item_values[0];
+		var	item_id			= item_values[1];
+		var item_quantity	= parseInt($('#quantity_' + item_id).html());
+		var item_price		= parseFloat($('#item_price_' + item_id).html());
+		var item_subtotal	= parseFloat($('#item_subtotal_' + item_id).html());
+		var cart_total		= parseFloat($('#cart_total').html());
+				
+		if (item_action == 'add')
+		{
+			item_quantity = item_quantity + 1;
+			api_url = api_url + '/quantity/' + item_quantity;
+		}
+		
+		// Api Call
+		$.get(api_url, function(result)
+		{		
+			if (result.status == 'success')
+			{	
+				// Update Screen Values							
+				if (item_action == 'add')
+				{
+					item_subtotal = item_price + item_subtotal;
+					cart_total	  = cart_total + item_price;
+
+					$('#quantity_' + item_id).html(item_quantity);
+					$('#item_subtotal_' + item_id).html(item_subtotal.toFixed(2));
+					$('#cart_total').html(cart_total.toFixed(2));
+				}
+				else if (item_action == 'remove')
+				{
+					cart_total = cart_total - item_subtotal;					
+					
+					if (cart_total == 0)
+					{
+						hideEmptyCart();
+					}
+					else
+					{
+						$('#cart_item_' + item_id).fadeOut('slow');
+						$('#cart_total').html(cart_total.toFixed(2));
+					}
+				}
+			}
+			else
+			{
+				alert('Oopps we were unable to ' + item_action +' that item!');
+			}
+		});
+	});
+	
+	// Empty Cart
+	$('#cart_button_empty').live('click', function(eve)
+	{
+		eve.preventDefault();
+	
+		var api_url = $(this).attr('href');
+		
+		console.log(api_url);
+
+		$.get(api_url, function(result)
+		{		
+			$('html, body').animate({scrollTop:0});
+
+			if (result.status == 'success')
+			{				
+				hideEmptyCart();
+			}
+			else
+			{				
+				$('#content_message').notify({scroll:true,status:result.status,message:result.message});			
+			}
+		});
+	});
+		
+	// Hide Empty Cart	
+	function hideEmptyCart()
+	{		
+		$('#cart_contents').fadeOut('normal');
+		$('#cart_checkout_actions').fadeOut('normal');
+		$('#cart_contents_terms').fadeOut('normal');				
+		$('#content_wide').append('<div id="cart_contents_empty"><h4>Your Cart Is Empty &nbsp;&nbsp;<a href="' + base_url + '">Continue Shopping</a></h4></div>');
+	}
+
+});
+</script>
