@@ -34,12 +34,10 @@ class Api extends Oauth_Controller
 				'date_start'		=> $event->date_start
 			)
 		);
-		
-		$new_insert = $this->cart->insert($insert);
 	
-		if ($new_insert)
+		if ($new_insert = $this->cart->insert($insert))
 		{
-            $message = array('status' => 'success', 'message' => 'Success ');		
+            $message = array('status' => 'success', 'message' => 'Success item added to cart', 'data' => array('items' => $this->cart->total_items(), 'total' => $this->cart->total()));		
 		}
 		else
 		{
@@ -72,13 +70,8 @@ class Api extends Oauth_Controller
 	}
 
 	function update_get()
-	{
-		$data = array(
-			'rowid'	=> $this->get('id'),
-			'qty'	=> $this->get('quantity')
-		);
-		
-		if ($this->cart->update($data))
+	{		
+		if ($update = $this->cart->update(array('rowid'	=> $this->get('id'), 'qty' => $this->get('quantity'))))
 		{
             $message = array('status' => 'success', 'message' => 'Yah, your cart was updated');		
 		}
@@ -93,10 +86,8 @@ class Api extends Oauth_Controller
 		
 	// Removes Item
 	function remove_get()
-	{
-		$update = $this->cart->update(array('rowid' => $this->uri->segment(3), 'qty' => 0));
-		
-		if ($update)
+	{		
+		if ($update = $this->cart->update(array('rowid' => $this->get('id'), 'qty' => 0)))
 		{
             $message = array('status' => 'success', 'message' => 'Success');
 		}
@@ -111,18 +102,9 @@ class Api extends Oauth_Controller
 	// Emptys Cart
 	function destroy_get()
 	{
-		$destroy = $this->cart->destroy();
-
-		if ($destroy)
-		{
-            $message = array('status' => 'success', 'message' => 'Success ');		
-		}
-		else
-		{
-            $message = array('status' => 'error', 'message' => 'Could not find any classes');
-		}
-		
-        $this->response($message, 200);		
+		$this->cart->destroy();
+        $message = array('status' => 'success', 'message' => 'Your cart has been emptied');		
+        $this->response($message, 200);
 	}
 	
 }

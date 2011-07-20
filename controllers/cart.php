@@ -62,6 +62,19 @@ class Cart extends Site_Controller
 		
 		$this->render('wide');
 	}
+	
+	function view() 
+	{
+		if ($product = $this->social_igniter->get_content($this->uri->segment(3)))
+		{
+			$categories_url = $this->social_tools->make_categories_url($this->categories, $product->category_id);
+			redirect(base_url().$categories_url.$class->title_url);
+		}
+		else
+		{
+			redirect(404);
+		}
+	}	
 		
 	/* Widgets */
 	function widgets_your_cart()
