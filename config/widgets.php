@@ -23,3 +23,16 @@ $config['cart_widgets'][] = array(
 		'content'	=> ''		
 	)
 );
+
+$config['cart_widgets'][] = array(
+	'regions'	=> array('sidebar'),
+	'widget'	=> array(
+		'module'	=> 'cart',
+		'name'		=> 'Your Cart',
+		'method'	=> 'run',
+		'path'		=> 'widgets_your_cart',
+		'multiple'	=> 'FALSE',
+		'order'		=> '1',
+		'content'	=> ''		
+	)
+);

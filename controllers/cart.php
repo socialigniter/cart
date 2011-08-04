@@ -27,7 +27,7 @@ class Cart extends Site_Controller
 		$this->data['contents'] 				= $this->cart->contents();
 		$this->data['page_title'] 				= 'Your Cart';
 		
-		$this->render('site_wide');
+		$this->render('wide');
 	}
 		
 	function registration()
@@ -38,7 +38,7 @@ class Cart extends Site_Controller
 		$this->data['cart_progress']			= $this->load->view('partials/cart_progress', $this->data, true);
 		$this->data['page_title'] 				= 'Registration';
 		
-		$this->render('site_wide');
+		$this->render('wide');
 	}
 	
 	function payment()
@@ -49,7 +49,7 @@ class Cart extends Site_Controller
 		$this->data['cart_progress']			= $this->load->view('partials/cart_progress', $this->data, true);
 		$this->data['page_title'] 				= 'Payment';
 		
-		$this->render('site_wide');
+		$this->render('wide');
 	}
 	
 	function complete()
@@ -60,8 +60,28 @@ class Cart extends Site_Controller
 		$this->data['cart_progress']			= $this->load->view('partials/cart_progress', $this->data, true);
 		$this->data['page_title'] 				= 'Complete';
 		
-		$this->render('site_wide');
+		$this->render('wide');
 	}
+	
+	function view() 
+	{
+		if ($product = $this->social_igniter->get_content($this->uri->segment(3)))
+		{
+			$categories_url = $this->social_tools->make_categories_url($this->categories, $product->category_id);
+			redirect(base_url().$categories_url.$class->title_url);
+		}
+		else
+		{
+			redirect(404);
+		}
+	}	
 		
+	/* Widgets */
+	function widgets_your_cart()
+	{
+		$this->data['cart_contents'] = $this->cart->contents();
+		
+		$this->load->view('widgets/your_cart', $this->data);
+	}
 	
 }
